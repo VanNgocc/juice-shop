@@ -16,10 +16,10 @@ jobs:
         with:
           fetch-depth: 0  
 
-      - name: Cài đặt Node.js 18
+      - name: Cài đặt Node.js 22
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Cài đặt Thư viện
         run: npm install --legacy-peer-deps
