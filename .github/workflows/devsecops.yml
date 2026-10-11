@@ -1,0 +1,40 @@
+name: DevSecOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  workflow_dispatch: 
+
+jobs:
+  build-test-quality:
+    name: Build, Test & SonarCloud Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Mã Nguồn
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  
+
+      - name: Cài đặt Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cài đặt Thư viện
+        run: npm install --legacy-peer-deps
+
+      - name: Chạy Unit Test & Đo Lường Độ Phủ Mã (Coverage)
+        run: npx nyc --reporter=lcov npm run test:server
+        continue-on-error: true 
+
+      - name: Quét Mã Nguồn & Đẩy lên SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=VanNgocc_juice-shop
+            -Dsonar.organization=vanngocc
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
