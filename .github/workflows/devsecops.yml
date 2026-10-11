@@ -23,6 +23,7 @@ jobs:
 
       - name: Cài đặt Thư viện
         run: npm install --legacy-peer-deps
+        continue-on-error: true
 
       - name: Chạy Unit Test & Đo Lường Độ Phủ Mã (Coverage)
         run: npx nyc --reporter=lcov npm run test:server
